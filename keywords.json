@@ -1,0 +1,18 @@
+{
+    "en": {
+        "slot": "slot",
+        "item": "item",
+
+        "pulse": "pulse",
+        "reroll": "reroll",
+        "rotate": "rotate",
+        "level-up": "level-up",
+
+        "points": "points",
+        "bonus": "bonus",
+        "multiplier": "multiplier",
+        "grubby": "grubby",
+        "floaty": "floaty",
+        "doomed": "doomed"
+    }
+}
