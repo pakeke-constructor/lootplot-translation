@@ -121,6 +121,17 @@ Here are the keywords that must be consistently translated:
 
 '''
 
+
+#
+# what LLM is best to use???
+#
+#  gpt-4o is apparently the best for short text.
+#  Claude-3.5-sonnet was allegedly the best for coherence and flow though.
+#  (deepseek good for chinese apparently?)
+#
+#
+
+
 def chat(message, model="openai/gpt-3.5-turbo"):
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
