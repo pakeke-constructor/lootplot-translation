@@ -136,11 +136,8 @@ def translate_text(text):
 
 
     There are also "keywords" that must be translated consistently, regardless of casing.
-    Even if the sentence doesn't make grammatical sense, you should ALWAYS translate the special keywords consistently, since they have special meaning in the game.  
-    Here are the keyword translations:  
-
+    Even if the sentence doesn't make grammatical sense, you should ALWAYS translate the keywords according to the following definitions:  
     {KEYS}
-
 
     You should aim for the translated text to be extremely concise and clear.
     Favour conciseness and clarity over everything else, even grammatical correctness. This is imperative.
