@@ -3,12 +3,15 @@ import requests
 import re
 import json
 import os
+
 from dotenv import load_dotenv
 
+from util import *
+
+assert load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
-assert load_dotenv()
 
 
 def extract_tags_for_translation(text):
@@ -91,8 +94,20 @@ def load_keywords():
 
 
 
-def getPrompt(text):
-    PROMPT = f'''
+#
+# what LLM is best to use???
+#
+#  gpt-4o is apparently the best for short text.
+#  Claude-3.5-sonnet was allegedly the best for coherence and flow though.
+#  (deepseek good for chinese apparently?)
+#
+
+# MODEL = "openai/gpt-3.5-turbo"
+MODEL = "openai/gpt-4o"
+
+
+def translate_text(text):
+    prompt = f'''
 
     You are an expert translator translating a strategy-game from English to {TARGET_LANGUAGE}.
 
@@ -128,29 +143,40 @@ def getPrompt(text):
 
     Translate the following text to {TARGET_LANGUAGE}:
 
-    {text}
+    text: "{text}"
     '''
-
-
-#
-# what LLM is best to use???
-#
-#  gpt-4o is apparently the best for short text.
-#  Claude-3.5-sonnet was allegedly the best for coherence and flow though.
-#  (deepseek good for chinese apparently?)
-#
-#
-
-
-def chat(message, model="openai/gpt-3.5-turbo"):
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
-        headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"},
+        headers={
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json"
+        },
         json={
-            "model": model,
-            "messages": [{"role": "user", "content": message}]
+            "model": MODEL,
+            "messages": [{"role": "user", "content": prompt}]
         }
     )
-    return response.json()["choices"][0]["message"]["content"]
+    response.raise_for_status()
+    translated = response.json()["choices"][0]["message"]["content"]
+    return translated
+
+
+
+def run():
+    jsn = read_json("input/localization_mods_TEST.json")
+
+    tformat = json_to_translator_format(jsn)
+    def ignore_key(k):
+        return k == "placeholders" #bool(re.match(r'\\\?\[\d+\]$', k))
+    outformat = map_dict(tformat, translate_text, should_ignore_key=ignore_key, print_progress=True)
+    out_jsn  = json_from_translator_format(outformat)
+
+    write_json(f"output/game_mods/{TARGET_LANGUAGE_CODE}.json", out_jsn)
+
+
+
+run()
+
+
 
 

@@ -1,0 +1,11 @@
+{
+    "lootplot.s0.starting_items": {
+        "{wavy freq=0.5 spacing=0.4 amp=0.5}{outline}WASD / Right click to move.\nScroll to zoom.{/outline}{/wavy}": "{wavy freq=0.5 spacing=0.4 amp=0.5}{outline}WASD / Right click to move.\nScroll to zoom.{/outline}{/wavy}",
+        "CHALLENGE-ITEM!\nFor PROS ONLY.": "CHALLENGE-ITEM!\nFor PROS ONLY.",
+        "One Ball": "One Ball"
+    },
+    "lootplot.unlocks": {
+        "Can be unlocked with a {lootplot:INFO_COLOR}key!": "Can be unlocked with a {lootplot:INFO_COLOR}key!",
+        "{i}What does it contain?{/i}": "{i}What does it contain?{/i}"
+    }
+}
