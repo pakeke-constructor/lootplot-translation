@@ -6,6 +6,7 @@
         "pulse": "Pulse",
         "reroll": "Reroll",
         "rotate": "Rotate",
+        "destroy": "Destroy",
         "level-up": "Level-Up",
 
         "points": "points",
@@ -14,6 +15,30 @@
 
         "grubby": "Grubby",
         "floaty": "Floaty",
-        "doomed": "doomed"
+        "doomed": "doomed",
+        "repeater": "repeater",
+        "lives": "lives"
+    },
+
+    "zh": {
+        "slot": "槽",
+        "item": "物品",
+        
+        "pulse": "脉冲",
+        "reroll": "重掷",
+        "rotate": "旋转",
+        "destroy": "摧毁",
+        "level-up": "升级",
+        
+        "points": "点数",
+        "bonus": "奖励",
+        "multiplier": "倍率",
+        
+        "grubby": "肮脏",
+        "floaty": "漂浮",
+        "doomed": "厄运",
+        "repeater": "重复",
+        "lives": "生命"
     }
+
 }

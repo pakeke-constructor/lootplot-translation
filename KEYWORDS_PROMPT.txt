@@ -1,0 +1,49 @@
+
+I am translating my strategy videogame.
+
+In my game, I have a bunch of keywords that are used throughout the game consistently. 
+
+When translating, the keywords don't need to be direct translations;
+instead, you should pick words that would make sense as a keyword; 
+i.e. are generic, are recognizable, and concise.
+
+Here's my keywords:
+
+```
+{
+    "en": {
+        "slot": "slot",
+        "item": "item",
+
+        "pulse": "Pulse",
+        "reroll": "Reroll",
+        "rotate": "Rotate",
+        "destroy": "Destroy",
+        "level-up": "Level-Up",
+
+        "points": "points",
+        "bonus": "bonus",
+        "multiplier": "multiplier",
+
+        "grubby": "Grubby",
+        "floaty": "Floaty",
+        "doomed": "doomed",
+        "repeater": "repeater",
+        "lives": "lives"
+    }
+}
+```
+
+I want you to translate these keywords to the following language:
+[Language], [language-code]
+
+Pick words that are simple and clear, and fit the game's context.
+Avoid words that are prone to bad pluralization or have multiple meanings, since they may be used in odd contexts.
+
+For example, 
+- `slot` is something that holds items.
+- pulse, reroll, rotate, etc, are "triggers"; they cause stuff to activate.
+- floaty, doomed, grubby, are all modifiers
+
+Your output should be the JSON in the new language. 
+
