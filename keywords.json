@@ -13,6 +13,9 @@
         "bonus": "bonus",
         "multiplier": "multiplier",
 
+        "activation": "activation",
+        "activate": "activate",
+
         "grubby": "Grubby",
         "floaty": "Floaty",
         "doomed": "doomed",
@@ -31,12 +34,15 @@
         "level-up": "升级",
         
         "points": "点数",
-        "bonus": "奖励",
+        "bonus": "加成",
         "multiplier": "倍率",
+
+        "activation": "触发",
+        "activates": "触发",
         
         "grubby": "肮脏",
-        "floaty": "漂浮",
-        "doomed": "厄运",
+        "floaty": "浮空",
+        "doomed": "注定",
         "repeater": "重复",
         "lives": "生命"
     }

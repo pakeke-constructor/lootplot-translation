@@ -44,6 +44,8 @@ For example,
 - `slot` is something that holds items.
 - pulse, reroll, rotate, etc, are "triggers"; they cause stuff to activate.
 - floaty, doomed, grubby, are all modifiers
+- "activate" is a momentary activation, like pressing a button once.
+- "bonus" is a modifier for points. multiplier is a multiplier for points.
 
 Your output should be the JSON in the new language. 
 
