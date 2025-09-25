@@ -3,16 +3,17 @@
         "slot": "slot",
         "item": "item",
 
-        "pulse": "pulse",
-        "reroll": "reroll",
-        "rotate": "rotate",
-        "level-up": "level-up",
+        "pulse": "Pulse",
+        "reroll": "Reroll",
+        "rotate": "Rotate",
+        "level-up": "Level-Up",
 
         "points": "points",
         "bonus": "bonus",
         "multiplier": "multiplier",
-        "grubby": "grubby",
-        "floaty": "floaty",
+
+        "grubby": "Grubby",
+        "floaty": "Floaty",
         "doomed": "doomed"
     }
 }

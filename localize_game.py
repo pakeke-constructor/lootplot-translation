@@ -91,35 +91,45 @@ def load_keywords():
 
 
 
-PROMPT = f'''
+def getPrompt(text):
+    PROMPT = f'''
 
-You are an expert translator translating a strategy-game from English to {TARGET_LANGUAGE}.
+    You are an expert translator translating a strategy-game from English to {TARGET_LANGUAGE}.
 
-The purpose of the game is to earn money, buy items, gain more points
+    The purpose of the game is to earn money, buy items, gain more points
 
-The text will come with tags, eg: "[1]Lorem[/1] ipsum"
-You should seek to keep the tags around the words as much as possible.  
+    The text will come with tags, eg: "[1]Lorem[/1] ipsum"
+    You should seek to keep the tags around the words as much as possible.  
 
-Example input:
-"[1]Hello[/1], I am [2]a [3]school teacher[/3][/2]"
+    Example input:
+    "[1]Hello[/1], I am [2]a [3]school teacher[/3][/2]"
 
-Ideal output: (for Chinese)
-[1]你好[/1]，我是[2]一名[3]学校老师[/3][/2]
-
-
-If unsure, maintain the tags around the words.
-Example:
-"[1]Hello[/1] was said by me." --> "I said [1]hello[/1]"
+    Ideal output: (for Chinese)
+    [1]你好[/1]，我是[2]一名[3]学校老师[/3][/2]
 
 
-There are also "keywords" that must be translated consistently.  
-Here are the keywords that must be consistently translated:
-
-{KEYS}
-
+    If unsure, maintain the tags around the words.
+    Example:
+    "[1]Hello[/1] was said by me." --> "I said [1]hello[/1]"
 
 
-'''
+    There are also "keywords" that must be translated consistently, regardless of casing.
+    Even if the sentence doesn't make grammatical sense, you should ALWAYS translate the special keywords consistently, since they have special meaning in the game.  
+    Here are the keyword translations:  
+
+    {KEYS}
+
+
+    You should aim for the translated text to be extremely concise and clear.
+    Favour conciseness and clarity over everything else, even grammatical correctness. This is imperative.
+
+    Your job is to translate text to {TARGET_LANGUAGE}.
+    The ONLY output should be the translated text, (with tags if relevant.)
+
+    Translate the following text to {TARGET_LANGUAGE}:
+
+    {text}
+    '''
 
 
 #
