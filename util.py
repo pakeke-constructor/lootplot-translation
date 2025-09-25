@@ -24,8 +24,8 @@ def map_dict(d, func, should_ignore_key=None, print_progress=False):
         result = {}
         for k, v in dictionary.items():
             if should_ignore_key and should_ignore_key(k):
-                continue
-            if isinstance(v, dict):
+                result[k] = v
+            elif isinstance(v, dict):
                 result[k] = map_internal(v)
             elif isinstance(v, str):
                 result[k] = func(v)

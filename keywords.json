@@ -46,6 +46,12 @@
         "activation": "触发",
         "activate": "触发",
         
+        "king": "全域",
+        "queen": "斜直",
+        "bishop": "斜向",
+        "rook": "直线",
+        "knight": "L形",
+        
         "grubby": "肮脏",
         "floaty": "浮空",
         "doomed": "注定",

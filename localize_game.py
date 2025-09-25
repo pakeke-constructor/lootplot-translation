@@ -64,7 +64,7 @@ def json_to_translator_format(data):
 
 def json_from_translator_format(data):
     """Convert translator-friendly format back to original JSON with tags."""
-    if isinstance(data, dict) and 'string' in data and 'placeholders' in data:
+    if isinstance(data, dict) and 'string' in data:
         result = data['string']
         for placeholder, original_tag in data['placeholders'].items():
             result = result.replace(placeholder, original_tag)
@@ -94,7 +94,7 @@ def load_keywords():
             assert k in keywords, "Target language is missing keyword: " + k
 
         for k,v in keywords.items():
-            KEYS += "\n" + k + ": " + v
+            KEYS += "\n    " + k + ": " + v
         KEYS += "\n"
 
 
@@ -127,7 +127,7 @@ def translate_text(text):
         * **Incorrect Output:** `[1]Te daré[/1] tres monedas de oro.`
 
     2.  **Mandatory Keywords:** Below is a list of keywords. These keywords MUST be translated exactly as specified in the list below, regardless of context or casing in the source text. This rule overrides all other grammatical or stylistic considerations.
-        {KEYS}
+    {KEYS}
 
     3.  **Prioritize Clarity & Brevity:** Your translations are for game UI elements and notifications. They MUST be concise and immediately understandable.
         * Sacrifice literal, word-for-word translation for clarity.

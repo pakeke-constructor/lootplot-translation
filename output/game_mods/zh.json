@@ -1,1 +1,16 @@
-{"lootplot.s0.starting_items": {"{wavy freq=0.5 spacing=0.4 amp=0.5}{outline}WASD / Right click to move.\nScroll to zoom.{/outline}{/wavy}": {"string": "[1][2]WASD/\u53f3\u952e\u79fb\u52a8\u3002\u6eda\u52a8\u7f29\u653e\u3002[/2][/3]"}, "CHALLENGE-ITEM!\nFor PROS ONLY.": {"string": "\u6311\u6218\u7269\u54c1\uff01 \u4ec5\u9650\u4e13\u4e1a\u4eba\u58eb\u3002"}, "One Ball": {"string": "\u4e00\u4e2a\u7403"}}, "lootplot.unlocks": {"Can be unlocked with a {lootplot:INFO_COLOR}key!": {"string": "\u53ef\u4ee5\u7528[1]\u94a5\u5319[/1]\u89e3\u9501\uff01"}, "{i}What does it contain?{/i}": {"string": "[1]\u5b83\u5305\u542b\u4ec0\u4e48\uff1f[/1]"}}}
+{
+    "lootplot.s0.starting_items": {
+        "{wavy freq=0.5 spacing=0.4 amp=0.5}{outline}WASD / Right click to move.\nScroll to zoom.{/outline}{/wavy}": "\"{wavy freq=0.5 spacing=0.4 amp=0.5}{outline}WASD / \u53f3\u952e\u70b9\u51fb\u79fb\u52a8\u3002 \u6eda\u52a8\u7f29\u653e\u3002{/outline}{/wavy}\"",
+        "CHALLENGE-ITEM!\nFor PROS ONLY.": "\u6311\u6218-\u7269\u54c1\uff01 \u4ec5\u9650\u9ad8\u624b\u3002",
+        "One Ball": "\u4e00\u4e2a\u7403"
+    },
+    "lootplot.unlocks": {
+        "Can be unlocked with a {lootplot:INFO_COLOR}key!": "\u53ef\u4ee5\u7528\u4e00\u4e2a{lootplot:INFO_COLOR}\u94a5\u5319[/1]\u89e3\u9501\uff01",
+        "{i}What does it contain?{/i}": "\"{i}\u5b83\u5305\u542b\u4ec0\u4e48\uff1f{/i}\""
+    },
+    "lootplot.s0": {
+        "Converts target slot(s) into Reroll Slot": "\u5c06\u76ee\u6807\u69fd\u8f6c\u6362\u4e3a\u91cd\u63b7\u69fd",
+        "Trigger {lootplot:TRIGGER_COLOR}{wavy}PULSE{/wavy}{/lootplot:TRIGGER_COLOR} on target item": "\u5728\u76ee\u6807\u7269\u54c1\u4e0a\u89e6\u53d1{lootplot:TRIGGER_COLOR}{wavy}\u8109\u51b2{/wavy}{/lootplot:TRIGGER_COLOR}",
+        "Spawns a {c r=0.6 b=0.95 g=1}Diamond{/c} {lootplot:DOOMED_COLOR}DOOMED-25{/lootplot:DOOMED_COLOR} Slot": "\u751f\u6210\u4e00\u4e2a{c r=0.6 b=0.95 g=1}\u94bb\u77f3[/1]{lootplot:DOOMED_COLOR}\u6ce8\u5b9a-25{/lootplot:DOOMED_COLOR}\u69fd"
+    }
+}
