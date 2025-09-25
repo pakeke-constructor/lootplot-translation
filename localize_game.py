@@ -86,12 +86,19 @@ KEYS = ""
 
 def load_keywords():
     global KEYS
-    with open("keywords.json") as f:
-        dic = json.load(f)
-        for k,v in dic.items():
-            KEYS = "\n" + k + ": " + v
+    assert not KEYS
+    with open("keywords.json","r", encoding="utf8") as f:
+        dic = json.loads(f.read())
+        keywords = dic[TARGET_LANGUAGE_CODE]
+        for k,v in dic["en"].items():
+            assert k in keywords, "Target language is missing keyword: " + k
+
+        for k,v in keywords.items():
+            KEYS += "\n" + k + ": " + v
         KEYS += "\n"
 
+
+load_keywords()
 
 
 #
@@ -163,6 +170,7 @@ def translate_text(text):
 
 
 def run():
+    return
     jsn = read_json("input/localization_mods_TEST.json")
 
     tformat = json_to_translator_format(jsn)
