@@ -1,5 +1,7 @@
 
 import requests
+import time
+import httpx
 import re
 import json
 import os
@@ -142,25 +144,32 @@ def translate_text(text):
 
     **Source Text:** "{text}"
     '''
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": MODEL,
-            "messages": [{"role": "user", "content": prompt}]
-        }
-    )
-    response.raise_for_status()
-    translated = response.json()["choices"][0]["message"]["content"]
-    return translated
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+
+    backoff = 1
+    for _ in range(5):
+        try:
+            with httpx.Client() as client:
+                resp = client.post(url, headers=headers, json=data)
+                resp.raise_for_status()
+                return resp.json()["choices"][0]["message"]["content"]
+        except httpx.HTTPError:
+            time.sleep(backoff)
+            backoff *= 2
+    raise Exception("Failed after 5 attempts")
 
 
 
 def run():
-    jsn = read_json("input/localization_mods_TEST.json")
+    jsn = read_json("input/localization_mods.json")
 
     tformat = json_to_translator_format(jsn)
     def ignore_key(k):
