@@ -16,6 +16,12 @@
         "activation": "activation",
         "activate": "activate",
 
+        "king": "king",
+        "queen": "queen",
+        "bishop": "bishop",
+        "rook": "rook",
+        "knight": "knight",
+
         "grubby": "Grubby",
         "floaty": "Floaty",
         "doomed": "doomed",

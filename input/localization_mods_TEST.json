@@ -7,5 +7,10 @@
     "lootplot.unlocks": {
         "Can be unlocked with a {lootplot:INFO_COLOR}key!": "Can be unlocked with a {lootplot:INFO_COLOR}key!",
         "{i}What does it contain?{/i}": "{i}What does it contain?{/i}"
+    },
+    "lootplot.s0": {
+        "Converts target slot(s) into Reroll Slot": "Converts target slot(s) into Reroll Slot",
+        "Trigger {lootplot:TRIGGER_COLOR}{wavy}PULSE{/wavy}{/lootplot:TRIGGER_COLOR} on target item": "Trigger {lootplot:TRIGGER_COLOR}{wavy}PULSE{/wavy}{/lootplot:TRIGGER_COLOR} on target item",
+        "Spawns a {c r=0.6 b=0.95 g=1}Diamond{/c} {lootplot:DOOMED_COLOR}DOOMED-25{/lootplot:DOOMED_COLOR} Slot": "Spawns a {c r=0.6 b=0.95 g=1}Diamond{/c} {lootplot:DOOMED_COLOR}DOOMED-25{/lootplot:DOOMED_COLOR} Slot",
     }
 }

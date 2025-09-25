@@ -115,39 +115,32 @@ MODEL = "openai/gpt-4o"
 
 def translate_text(text):
     prompt = f'''
+    # ROLE AND GOAL
+    You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
 
-    You are an expert translator translating a strategy-game from English to {TARGET_LANGUAGE}.
+    # CRITICAL RULES
+    Follow these rules without exception:
 
-    The purpose of the game is to earn money, buy items, gain more points
+    1.  **Preserve Tags:** The source text contains formatting tags like `[1]...[/1]`. These tags must be preserved and wrap the corresponding words or phrases in the translated text. The meaning within the tags must be the same.
+        * **Input Example:** `I will give you [1]three gold coins[/1].`
+        * **Correct Output (Spanish):** `Te daré [1]tres monedas de oro[/1].`
+        * **Incorrect Output:** `[1]Te daré[/1] tres monedas de oro.`
 
-    The text will come with tags, eg: "[1]Lorem[/1] ipsum"
-    You should seek to keep the tags around the words as much as possible.  
+    2.  **Mandatory Keywords:** Below is a list of keywords. These keywords MUST be translated exactly as specified in the list below, regardless of context or casing in the source text. This rule overrides all other grammatical or stylistic considerations.
+        {KEYS}
 
-    Example input:
-    "[1]Hello[/1], I am [2]a [3]school teacher[/3][/2]"
+    3.  **Prioritize Clarity & Brevity:** Your translations are for game UI elements and notifications. They MUST be concise and immediately understandable.
+        * Sacrifice literal, word-for-word translation for clarity.
+        * Sacrifice grammatical complexity for punchy, direct language.
+        * This is the most important rule after keyword and tag handling.
 
-    Ideal output: (for Chinese)
-    [1]你好[/1]，我是[2]一名[3]学校老师[/3][/2]
+    4.  **Output Format:** Your ONLY output must be the raw translated text. No explanations, apologies, or conversational text like "Here is the translation:".
 
+    # TRANSLATION TASK
 
-    If unsure, maintain the tags around the words.
-    Example:
-    "[1]Hello[/1] was said by me." --> "I said [1]hello[/1]"
+    Translate the following text to **{TARGET_LANGUAGE}**.
 
-
-    There are also "keywords" that must be translated consistently, regardless of casing.
-    Even if the sentence doesn't make grammatical sense, you should ALWAYS translate the keywords according to the following definitions:  
-    {KEYS}
-
-    You should aim for the translated text to be extremely concise and clear.
-    Favour conciseness and clarity over everything else, even grammatical correctness. This is imperative.
-
-    Your job is to translate text to {TARGET_LANGUAGE}.
-    The ONLY output should be the translated text, (with tags if relevant.)
-
-    Translate the following text to {TARGET_LANGUAGE}:
-
-    text: "{text}"
+    **Source Text:** "{text}"
     '''
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
@@ -167,7 +160,6 @@ def translate_text(text):
 
 
 def run():
-    return
     jsn = read_json("input/localization_mods_TEST.json")
 
     tformat = json_to_translator_format(jsn)
