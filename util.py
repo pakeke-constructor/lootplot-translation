@@ -40,12 +40,12 @@ def map_dict(d, func, should_ignore_key=None, print_progress=False):
 
 
 def read_json(file):
-    with open(file,"r") as f:
+    with open(file,"r",encoding="utf8") as f:
         return json.loads(f.read())
 
 
 def write_json(file, data):
-    with open(file,"w+") as f:
+    with open(file,"w+",encoding="utf8") as f:
         f.write(json.dumps(data))
 
 
