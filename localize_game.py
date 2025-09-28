@@ -169,7 +169,7 @@ def translate_text(text):
 
 
 def run():
-    jsn = read_json("input/localization_mods_TEST.json")
+    jsn = read_json("input/localization_mods.json")
 
     tformat = json_to_translator_format(jsn)
     def ignore_key(k):
