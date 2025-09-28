@@ -2750,6 +2750,8 @@
         "Reset": "\u91cd\u7f6e"
     },
     "lootplot.singleplayer": {
+        "Continue Run?": "继续本轮游戏？",
+        "Continue Run": "继续本轮游戏",
         "Save-Quit": "\u4fdd\u5b58-\u9000\u51fa",
         "{wavy amp=0.5 k=0.5}{outline thickness=2}Round %{round}/%{numberOfRounds} - Level %{level}": "\"{wavy amp=0.5 k=0.5}{outline thickness=2}\u7b2c %{round}/%{numberOfRounds} \u56de\u5408 - \u5347\u7ea7 %{level}\"",
         "Resume": "\u7ee7\u7eed",
