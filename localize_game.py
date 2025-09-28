@@ -81,8 +81,8 @@ def json_from_translator_format(data):
 
 
 
-TARGET_LANGUAGE_CODE = "ru"
-TARGET_LANGUAGE = "Russian"
+TARGET_LANGUAGE_CODE = "zh"
+TARGET_LANGUAGE = "Chinese Simplified"
 
 KEYS = ""
 
@@ -168,16 +168,58 @@ def translate_text(text):
 
 
 
+
+def translate_text_umgcore(text):
+    prompt = f'''
+    # ROLE AND GOAL
+    You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
+
+    # CRITICAL RULES
+    Follow these rules without exception:
+
+    1.  **Prioritize Clarity & Brevity:** Your translations are for game UI elements and notifications. They MUST be concise and immediately understandable.
+        * If a singular word is provided as input, ONLY TRANSLATE THAT SINGULAR WORD.
+        * Maintain punctuation and capitalization if possible.
+
+    2.  **Output Format:** Your ONLY output must be the raw translated text. No explanations, apologies, or conversational text like "Here is the translation:".
+
+    # TRANSLATION TASK
+
+    Translate the following text to **{TARGET_LANGUAGE}**.
+
+    **Source Text:** "{text}"
+    '''
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+
+    backoff = 1
+    for _ in range(5):
+        try:
+            with httpx.Client() as client:
+                resp = client.post(url, headers=headers, json=data)
+                resp.raise_for_status()
+                return resp.json()["choices"][0]["message"]["content"]
+        except httpx.HTTPError:
+            time.sleep(backoff)
+            backoff *= 2
+    raise Exception("Failed after 5 attempts")
+
+
+
+
 def run():
-    jsn = read_json("input/localization_mods.json")
+    jsn = read_json("input/localization_umgcore.json")
 
-    tformat = json_to_translator_format(jsn)
-    def ignore_key(k):
-        return k == "placeholders" #bool(re.match(r'\\\?\[\d+\]$', k))
-    outformat = map_dict(tformat, translate_text, should_ignore_key=ignore_key, print_progress=True)
-    out_jsn  = json_from_translator_format(outformat)
+    out_jsn = map_dict(jsn, translate_text_umgcore, should_ignore_key=False, print_progress=True)
 
-    write_json(f"output/game_mods/{TARGET_LANGUAGE_CODE}.json", out_jsn)
+    write_json(f"output/game_umgcore/{TARGET_LANGUAGE_CODE}.json", out_jsn)
 
 
 
