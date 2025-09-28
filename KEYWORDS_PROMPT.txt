@@ -58,7 +58,7 @@ Avoid words that are prone to bad pluralization or have multiple meanings, since
 - pulse, reroll, rotate, etc, are "triggers"; they cause stuff to activate.
 - floaty, doomed, grubby, are all modifiers
 - "activate" is a momentary activation, like pressing a button once.
-- "bonus" is a modifier for points. multiplier is a multiplier for points.
+- bonus and multiplier are modifiers/multipliers for gaining points.
 - king, queen, rook, etc are chess-pieces, and in my game it refers to the *shape.* You should translate the shape, not the literal meaning. EG. Rook -> Plus, Bishop -> Cross, etc. Pick the best concise word.
 
 Your output should be the JSON in the new language. 

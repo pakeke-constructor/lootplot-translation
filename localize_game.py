@@ -81,8 +81,8 @@ def json_from_translator_format(data):
 
 
 
-TARGET_LANGUAGE_CODE = "zh"
-TARGET_LANGUAGE = "Simplified Chinese"
+TARGET_LANGUAGE_CODE = "ru"
+TARGET_LANGUAGE = "Russian"
 
 KEYS = ""
 
@@ -169,7 +169,7 @@ def translate_text(text):
 
 
 def run():
-    jsn = read_json("input/localization_mods.json")
+    jsn = read_json("input/localization_mods_TEST.json")
 
     tformat = json_to_translator_format(jsn)
     def ignore_key(k):
