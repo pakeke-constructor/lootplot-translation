@@ -1674,7 +1674,7 @@
         "Golden Great-Sword": "\u9ec4\u91d1\u5de8\u5251",
         "Black Die": "\u9ed1\u8272\u9ab0\u5b50",
         "Golden Turnip": "\u91d1\u8272\u841d\u535c",
-        "Adds {lootplot:POINTS_MULT_COLOR}mult{/lootplot:POINTS_MULT_COLOR} equal to 4% of the balance {lootplot:MONEY_COLOR}($%{balance})": "\u589e\u52a0{lootplot:POINTS_MULT_COLOR}\u500d\u7387{/lootplot:POINTS_MULT_COLOR}\uff0c\u7b49\u4e8e\u4f59\u989d\u76844%{lootplot:MONEY_COLOR}($%{balance})",
+        "Adds {lootplot:POINTS_MULT_COLOR}mult{/lootplot:POINTS_MULT_COLOR} equal to 4% of the balance {lootplot:MONEY_COLOR}($%{balance})": "\u589e\u52a0{lootplot:POINTS_MULT_COLOR}\u500d\u7387{/lootplot:POINTS_MULT_COLOR}\uff0c\u7b49\u4e8e\u4f59\u989d\u76844%%{lootplot:MONEY_COLOR}($%{balance})",
         "Gives {lootplot:POINTS_COLOR}+3 points{/lootplot:POINTS_COLOR} to items": "\u7ed9\u4e88\u7269\u54c1{lootplot:POINTS_COLOR}+3\u70b9\u6570{/lootplot:POINTS_COLOR}",
         "Whilst this curse exists, bonus will be less than 0.": "\u6b64\u8bc5\u5492\u5b58\u5728\u65f6\uff0c\u52a0\u6210\u5c06\u5c0f\u4e8e0\u3002",
         "Doomed Sword": "\u6ce8\u5b9a\u4e4b\u5251",
