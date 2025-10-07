@@ -227,7 +227,7 @@ def run(lang):
 
 
 def fix(lang):
-    jsn = NDict.from_json(f"output/game_mods/{lang}.json")
+    jsn = NDict.from_file(f"output/game_mods/{lang}.json")
 
     def find_brac(text):
         matches = re.findall(r'\{([^}]*)\}', text)
@@ -243,14 +243,16 @@ def fix(lang):
         key=tupkey[-1]
         if (not find_brac(key)):
             # no bracket; therefore, shouldnt have any [1], [/1]
+            print("CLEANING: ", str)
             return re.sub(r'\[/?\d\]', '', str)
         return key
         
 
     # fix floating tags
-    jsn = jsn.map(fix_floating_tags, None, True)
+    jsn = jsn.map(fix_floating_tags, None, False)
 
     jsn.to_file(f"output/game_umgcore/{lang}.json")
+
 
 
 fix("zh")

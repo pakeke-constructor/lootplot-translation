@@ -98,21 +98,14 @@ class NDict:
     def from_dict(d):
         return NDict(d)
     
-    def to_json(self):
-        return json.dumps(self.to_dict())
-    
-    @staticmethod
-    def from_json(s):
-        return NDict.from_dict(json.loads(s))
-
     @staticmethod
     def from_file(inputfile):
         with open(inputfile,"r",encoding="utf8") as f:
-            return NDict.from_json(f.read())
+            return NDict.from_dict(json.loads(f.read()))
 
     def to_file(self, outfile):
         with open(outfile,"w",encoding="utf8") as f:
-            f.write(self.to_json())
+            f.write(json.dumps(self.to_dict()))
 
     def map(    
         self, 
