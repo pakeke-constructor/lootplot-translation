@@ -107,11 +107,11 @@ class NDict:
 
     @staticmethod
     def from_file(inputfile):
-        with open(inputfile,"r") as f:
+        with open(inputfile,"r",encoding="utf8") as f:
             return NDict.from_json(f.read())
 
     def to_file(self, outfile):
-        with open(outfile,"w") as f:
+        with open(outfile,"w",encoding="utf8") as f:
             f.write(self.to_json())
 
     def map(    
