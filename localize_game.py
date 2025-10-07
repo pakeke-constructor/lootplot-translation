@@ -214,16 +214,48 @@ def translate_text_umgcore(text):
 
 
 
-def run():
+def run(lang):
     jsn = read_json("input/localization_umgcore.json")
 
     out_jsn = map_dict(jsn, translate_text_umgcore, should_ignore_key=False, print_progress=True)
 
-    write_json(f"output/game_umgcore/{TARGET_LANGUAGE_CODE}.json", out_jsn)
+    write_json(f"output/game_umgcore/{lang}.json", out_jsn)
 
 
 
-run()
+
+
+
+def fix(lang):
+    jsn = NDict.from_json(f"output/game_mods/{lang}.json")
+
+    def find_brac(text):
+        matches = re.findall(r'\{([^}]*)\}', text)
+        if len(matches) == 1:
+            return matches[0]
+        else:
+            return False
+
+    def map_string():
+        pass
+
+    def fix_floating_tags(tupkey, str) -> str:
+        key=tupkey[-1]
+        if (not find_brac(key)):
+            # no bracket; therefore, shouldnt have any [1], [/1]
+            return re.sub(r'\[/?\d\]', '', str)
+        return key
+        
+
+    # fix floating tags
+    jsn = jsn.map(fix_floating_tags, None, True)
+
+    jsn.to_file(f"output/game_umgcore/{lang}.json")
+
+
+fix("zh")
+
+# run()
 
 
 
