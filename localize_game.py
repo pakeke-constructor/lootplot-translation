@@ -236,17 +236,16 @@ def fix(lang):
         else:
             return False
 
-    def map_string():
-        pass
 
-    def fix_floating_tags(tupkey, str) -> str:
+    def fix_floating_tags(tupkey, val) -> str:
         key=tupkey[-1]
         if (not find_brac(key)):
             # no bracket; therefore, shouldnt have any [1], [/1]
-            print("CLEANING: ", str)
-            return re.sub(r'\[/?\d\]', '', str)
+            if re.match(r'\[/?\d\]', val):
+                print("CLEANING: ", val)
+                return re.sub(r'\[/?\d\]', '', val)
         return key
-        
+
 
     # fix floating tags
     jsn = jsn.map(fix_floating_tags, None, False)
