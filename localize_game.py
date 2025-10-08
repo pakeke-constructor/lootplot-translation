@@ -250,7 +250,7 @@ def fix(lang):
     # fix floating tags
     jsn = jsn.map(fix_floating_tags, None, False)
 
-    jsn.to_file(f"output/game_umgcore/{lang}.json")
+    # jsn.to_file(f"output/game_umgcore/{lang}.json")
 
 
 
