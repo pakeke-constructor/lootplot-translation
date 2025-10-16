@@ -314,7 +314,7 @@ def fix(lang):
 
 
 
-fix("ru")
+fix("zh")
 
 # run()
 
