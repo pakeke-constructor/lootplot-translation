@@ -281,14 +281,13 @@ def fix(lang):
 
         if (not find_brac(key)):
             if re.search(r'\[/?\d\]', val):
-                #return re.sub(r'\[/?\d\]', '', val)
-                print("FOUND: ", key.replace("\n",""), "  :::  ", val.replace("\n",""))
-                return val
+                replace = re.sub(r'\[/?\d\]', '', val)
+                return replace
         return val
 
 
     # fix floating tags
-    jsn = jsn.map(fix_floating_tags, None, True)
+    jsn = jsn.map(fix_floating_tags, None, False)
     # jsn = jsn.map(print, None, False)
 
     # jsn.to_file(f"output/game_umgcore/{lang}.json")
