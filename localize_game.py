@@ -278,23 +278,24 @@ def fix(lang):
 
     def fix_floating_tags(tupkey, val) -> str:
         key=tupkey[-1]
+
         if (not find_brac(key)):
-            # no bracket; therefore, shouldnt have any [1], [/1]
-            if re.match(r'\[/?\d\]', val):
-                print("FOUND: ", val)
+            if re.search(r'\[/?\d\]', val):
+                #return re.sub(r'\[/?\d\]', '', val)
+                print("FOUND: ", key.replace("\n",""), "  :::  ", val.replace("\n",""))
                 return val
-                return re.sub(r'\[/?\d\]', '', val)
         return val
 
 
     # fix floating tags
-    jsn = jsn.map(fix_floating_tags, None, False)
+    jsn = jsn.map(fix_floating_tags, None, True)
+    # jsn = jsn.map(print, None, False)
 
     # jsn.to_file(f"output/game_umgcore/{lang}.json")
 
 
 
-# fix("ru")
+fix("ru")
 
 # run()
 
