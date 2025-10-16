@@ -126,9 +126,6 @@ LANGUAGE_NAMES = {
 }
 
 
-TARGET_LANGUAGE_CODE = "zh"
-TARGET_LANGUAGE = "Chinese Simplified"
-
 KEYS = ""
 
 keywords_cache = {
