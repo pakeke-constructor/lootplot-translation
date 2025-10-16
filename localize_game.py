@@ -5,6 +5,7 @@ import httpx
 import re
 import json
 import os
+import textwrap
 
 from dotenv import load_dotenv
 
@@ -119,27 +120,39 @@ def json_from_translator_format(data):
 
 
 
+LANGUAGE_NAMES = {
+    "zh": "Chinese Simplified",
+    "ru": "Russian"
+}
+
 
 TARGET_LANGUAGE_CODE = "zh"
 TARGET_LANGUAGE = "Chinese Simplified"
 
 KEYS = ""
 
-def load_keywords():
-    global KEYS
-    assert not KEYS
+keywords_cache = {
+    # [lang] -> KEYWORDS
+}
+
+def get_keywords(lang):
+    if lang in keywords_cache:
+        return keywords_cache.get(lang)
+
     with open("keywords.json","r", encoding="utf8") as f:
+        keywords = ""
         dic = json.loads(f.read())
-        keywords = dic[TARGET_LANGUAGE_CODE]
+        assert lang in dic, "?"
+        keywords = dic[lang]
         for k,v in dic["en"].items():
             assert k in keywords, "Target language is missing keyword: " + k
 
         for k,v in keywords.items():
-            KEYS += "\n    " + k + ": " + v
-        KEYS += "\n"
+            keywords += "\n    " + k + ": " + v
+        keywords += "\n"
+        keywords_cache[lang] = keywords
 
 
-load_keywords()
 
 
 #
@@ -154,10 +167,12 @@ load_keywords()
 MODEL = "openai/gpt-4o"
 
 
-def translate_text(text):
-    prompt = f'''
+def translate_text(lang, text):
+    langname = LANGUAGE_NAMES[lang]
+
+    prompt = textwrap.dedent(f'''
     # ROLE AND GOAL
-    You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
+    You are an expert localization specialist, translating a strategy game from English to {langname}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
 
     # CRITICAL RULES
     Follow these rules without exception:
@@ -168,7 +183,7 @@ def translate_text(text):
         * **Incorrect Output:** `[1]Te daré[/1] tres monedas de oro.`
 
     2.  **Mandatory Keywords:** Below is a list of keywords. These keywords MUST be translated exactly as specified in the list below, regardless of context or casing in the source text. This rule overrides all other grammatical or stylistic considerations.
-    {KEYS}
+    {get_keywords(lang)}
 
     3.  **Prioritize Clarity & Brevity:** Your translations are for game UI elements and notifications. They MUST be concise and immediately understandable.
         * Sacrifice literal, word-for-word translation for clarity.
@@ -179,10 +194,11 @@ def translate_text(text):
 
     # TRANSLATION TASK
 
-    Translate the following text to **{TARGET_LANGUAGE}**.
+    Translate the following text to **{langname}**.
 
     **Source Text:** "{text}"
-    '''
+    ''')
+
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -208,10 +224,11 @@ def translate_text(text):
 
 
 
-def translate_text_umgcore(text):
-    prompt = f'''
+def translate_text_umgcore(lang: str, text: str):
+    langname = LANGUAGE_NAMES[lang]
+    prompt = textwrap.dedent(f'''
     # ROLE AND GOAL
-    You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
+    You are an expert localization specialist, translating a strategy game from English to {langname}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
 
     # CRITICAL RULES
     Follow these rules without exception:
@@ -224,10 +241,11 @@ def translate_text_umgcore(text):
 
     # TRANSLATION TASK
 
-    Translate the following text to **{TARGET_LANGUAGE}**.
+    Translate the following text to **{langname}**.
 
     **Source Text:** "{text}"
-    '''
+    ''')
+
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -256,7 +274,9 @@ def translate_text_umgcore(text):
 def run(lang):
     jsn = read_json("input/localization_umgcore.json")
 
-    out_jsn = map_dict(jsn, translate_text_umgcore, should_ignore_key=False, print_progress=True)
+    def translate(txt):
+        return translate_text_umgcore(lang, txt)
+    out_jsn = map_dict(jsn, translate, should_ignore_key=False, print_progress=True)
 
     write_json(f"output/game_umgcore/{lang}.json", out_jsn)
 
@@ -290,7 +310,7 @@ def fix(lang):
     jsn = jsn.map(fix_floating_tags, None, False)
     # jsn = jsn.map(print, None, False)
 
-    # jsn.to_file(f"output/game_umgcore/{lang}.json")
+    jsn.to_file(f"output/game_mods/{lang}.json")
 
 
 
