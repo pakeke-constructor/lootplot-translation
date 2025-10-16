@@ -18,6 +18,16 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 def extract_tags_for_translation(text):
     """Extract custom tags and replace with numbered placeholders."""
+    def extract_tag_name(tag):
+        content = tag[1:-1]
+        if content.startswith('/'):
+            content = content[1:]
+        return content.split()[0] if content else ''
+
+
+    def is_closing_tag(tag):
+        return tag.startswith('{/')
+
     pattern = r'\{[^}]*\}'
     matches = re.findall(pattern, text)
     
@@ -25,32 +35,45 @@ def extract_tags_for_translation(text):
     clean_string = text
     tag_counter = 1
     
+    tag_name_to_number = {}
+    opening_tags_seen = set()
+    
     for match in matches:
-        if match.startswith('{/'):
-            # Find the corresponding opening tag number
-            opening_content = match[2:-1]  # Remove {/ and }
-            opening_tag = None
-            for placeholder, original in placeholders.items():
-                if original == '{' + opening_content + '}' and not placeholder.startswith('[/'):
-                    opening_tag = placeholder[1:-1]  # Get number from [1]
-                    break
+        if is_closing_tag(match):
+            tag_name = extract_tag_name(match)
             
-            if opening_tag:
-                placeholder = f"[/{opening_tag}]"
+            if tag_name in tag_name_to_number:
+                number = tag_name_to_number[tag_name]
+                placeholder = f"[/{number}]"
             else:
                 placeholder = f"[/{tag_counter}]"
                 tag_counter += 1
         else:
-            placeholder = f"[{tag_counter}]"
+            tag_name = extract_tag_name(match)
+            number = tag_counter
+            placeholder = f"[{number}]"
+            
+            tag_name_to_number[tag_name] = number
+            opening_tags_seen.add(tag_name)
+            
             tag_counter += 1
         
         placeholders[placeholder] = match
         clean_string = clean_string.replace(match, placeholder, 1)
     
+    for tag_name in opening_tags_seen:
+        number = tag_name_to_number[tag_name]
+        closing_placeholder = f"[/{number}]"
+        
+        if closing_placeholder not in placeholders:
+            placeholders[closing_placeholder] = f"{{/{tag_name}}}"
+    
     return {
         'string': clean_string,
         'placeholders': placeholders
     }
+
+
 
 
 def json_to_translator_format(data):
@@ -231,8 +254,8 @@ def fix(lang):
 
     def find_brac(text):
         matches = re.findall(r'\{([^}]*)\}', text)
-        if len(matches) == 1:
-            return matches[0]
+        if len(matches) >= 1:
+            return True
         else:
             return False
 
@@ -242,9 +265,10 @@ def fix(lang):
         if (not find_brac(key)):
             # no bracket; therefore, shouldnt have any [1], [/1]
             if re.match(r'\[/?\d\]', val):
-                print("CLEANING: ", val)
+                print("FOUND: ", val)
+                return val
                 return re.sub(r'\[/?\d\]', '', val)
-        return key
+        return val
 
 
     # fix floating tags
@@ -254,10 +278,236 @@ def fix(lang):
 
 
 
-fix("zh")
+# fix("ru")
 
 # run()
 
 
 
+# Test Cases
+def test_general_case():
+    """Test basic opening and closing tags."""
+    text = "blah {foo}FOOBAR{/foo}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: General case")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "blah [1]FOOBAR[/1]"
+    assert result['placeholders']['[1]'] == '{foo}'
+    assert result['placeholders']['[/1]'] == '{/foo}'
+    print("✓ Passed\n")
+
+
+def test_nested_tags():
+    """Test nested tags with same name."""
+    text = "{bar}blah {foo}FOOBAR{/foo}{/bar}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Nested tags")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "[1]blah [2]FOOBAR[/2][/1]"
+    assert result['placeholders']['[1]'] == '{bar}'
+    assert result['placeholders']['[2]'] == '{foo}'
+    assert result['placeholders']['[/1]'] == '{/bar}'
+    assert result['placeholders']['[/2]'] == '{/foo}'
+    print("✓ Passed\n")
+
+
+def test_tags_with_arguments():
+    """Test tags with arguments."""
+    text = "text {c r=0 g=0 b=1}blue text!{/c}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Tags with arguments")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "text [1]blue text![/1]"
+    assert result['placeholders']['[1]'] == '{c r=0 g=0 b=1}'
+    assert result['placeholders']['[/1]'] == '{/c}'
+    print("✓ Passed\n")
+
+
+def test_missing_closing_tag():
+    """Test automatic closing tag generation."""
+    text = "{foo}hello!"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Missing closing tag")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "[1]hello!"
+    assert result['placeholders']['[1]'] == '{foo}'
+    assert result['placeholders']['[/1]'] == '{/foo}'
+    print("✓ Passed\n")
+
+
+def test_multiple_same_tag_different_args():
+    """Test multiple instances of same tag with different arguments."""
+    text = "{c r=255}red{/c} and {c g=255}green{/c} and {c b=255}blue{/c}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Multiple same tags with different arguments")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "[1]red[/1] and [2]green[/2] and [3]blue[/3]"
+    assert result['placeholders']['[1]'] == '{c r=255}'
+    assert result['placeholders']['[2]'] == '{c g=255}'
+    assert result['placeholders']['[3]'] == '{c b=255}'
+    assert result['placeholders']['[/1]'] == '{/c}'
+    assert result['placeholders']['[/2]'] == '{/c}'
+    assert result['placeholders']['[/3]'] == '{/c}'
+    print("✓ Passed\n")
+
+
+def test_nested_different_tags_with_args():
+    """Test nested tags with different names and arguments."""
+    text = "{b}bold {c r=255}red bold{/c} still bold{/b}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Nested different tags with arguments")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "[1]bold [2]red bold[/2] still bold[/1]"
+    assert result['placeholders']['[1]'] == '{b}'
+    assert result['placeholders']['[2]'] == '{c r=255}'
+    assert result['placeholders']['[/1]'] == '{/b}'
+    assert result['placeholders']['[/2]'] == '{/c}'
+    print("✓ Passed\n")
+
+
+def test_many_tags_sprawled():
+    """Test complex text with multiple different tags sprawled throughout."""
+    text = (
+        "Welcome {b}brave{/b} adventurer! "
+        "You found {c r=255 g=215 b=0}golden coins{/c} and "
+        "{i}mysterious{/i} artifacts. "
+        "{u}Warning:{/u} {c r=255 g=0 b=0}danger{/c} ahead! "
+        "Use {b}{i}extreme caution{/i}{/b} always."
+    )
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Many tags sprawled out")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    expected_string = (
+        "Welcome [1]brave[/1] adventurer! "
+        "You found [2]golden coins[/2] and "
+        "[3]mysterious[/3] artifacts. "
+        "[4]Warning:[/4] [5]danger[/5] ahead! "
+        "Use [6][7]extreme caution[/7][/6] always."
+    )
+    
+    assert result['string'] == expected_string
+    assert result['placeholders']['[1]'] == '{b}'
+    assert result['placeholders']['[2]'] == '{c r=255 g=215 b=0}'
+    assert result['placeholders']['[3]'] == '{i}'
+    assert result['placeholders']['[4]'] == '{u}'
+    assert result['placeholders']['[5]'] == '{c r=255 g=0 b=0}'
+    assert result['placeholders']['[6]'] == '{b}'
+    assert result['placeholders']['[7]'] == '{i}'
+    print("✓ Passed\n")
+
+
+def test_edge_case_only_closing_tag():
+    """Test edge case with only closing tag (no matching opening)."""
+    text = "some text {/foo} here"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Edge case - only closing tag")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == "some text [/1] here"
+    assert result['placeholders']['[/1]'] == '{/foo}'
+    print("✓ Passed\n")
+
+
+def test_empty_text():
+    """Test with empty text."""
+    text = ""
+    result = extract_tags_for_translation(text)
+    
+    print("Test: Empty text")
+    print(f"Input:  '{text}'")
+    print(f"Output: '{result['string']}'")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == ""
+    assert result['placeholders'] == {}
+    print("✓ Passed\n")
+
+
+
+def test_nested_args():
+    """Test with text but no tags."""
+    text = "test {c r=1 b=0}{c r=0}nesty{/c}{/c}"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: No tags")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    print("✓ Passed\n")
+
+
+test_nested_args()
+
+raise ValueError("x")
+
+
+
+
+def test_no_tags():
+    """Test with text but no tags."""
+    text = "This is plain text with no tags"
+    result = extract_tags_for_translation(text)
+    
+    print("Test: No tags")
+    print(f"Input:  {text}")
+    print(f"Output: {result['string']}")
+    print(f"Placeholders: {result['placeholders']}")
+    
+    assert result['string'] == text
+    assert result['placeholders'] == {}
+    print("✓ Passed\n")
+
+
+# Run all tests
+if __name__ == "__main__":
+    print("=" * 60)
+    print("Running Tag Extraction Tests")
+    print("=" * 60 + "\n")
+    
+    # test_general_case()
+    test_many_tags_sprawled()
+    test_nested_tags()
+    test_tags_with_arguments()
+    test_missing_closing_tag()
+    test_multiple_same_tag_different_args()
+    test_nested_different_tags_with_args()
+    test_edge_case_only_closing_tag()
+    test_empty_text()
+    test_no_tags()
+    
+    print("=" * 60)
+    print("All tests passed! ✓")
+    print("=" * 60)
 
