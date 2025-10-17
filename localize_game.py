@@ -18,7 +18,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
 
-def extract_tags_for_translation(text):
+def extract_tags_for_translation(text) -> tuple[str, dict[str,str]]:
     """Extract custom tags and replace with numbered placeholders."""
 
     def extract_tag_name(tag):
@@ -84,39 +84,8 @@ def extract_tags_for_translation(text):
         if closing_placeholder not in placeholders:
             placeholders[closing_placeholder] = f"{{/{tag_name}}}"
     
-    return {
-        'string': clean_string,
-        'placeholders': placeholders
-    }
+    return clean_string, placeholders
 
-
-
-
-
-def json_to_translator_format(data):
-    """Convert JSON with custom tags to translator-friendly format."""
-    if isinstance(data, str):
-        return extract_tags_for_translation(data)
-    elif isinstance(data, dict):
-        return {key: json_to_translator_format(value) for key, value in data.items()}
-    elif isinstance(data, list):
-        return [json_to_translator_format(item) for item in data]
-    else:
-        return data
-
-def json_from_translator_format(data):
-    """Convert translator-friendly format back to original JSON with tags."""
-    if isinstance(data, dict) and 'string' in data:
-        result = data['string']
-        for placeholder, original_tag in data['placeholders'].items():
-            result = result.replace(placeholder, original_tag)
-        return result
-    elif isinstance(data, dict):
-        return {key: json_from_translator_format(value) for key, value in data.items()}
-    elif isinstance(data, list):
-        return [json_from_translator_format(item) for item in data]
-    else:
-        return data
 
 
 
@@ -137,17 +106,20 @@ def get_keywords(lang):
         return keywords_cache.get(lang)
 
     with open("keywords.json","r", encoding="utf8") as f:
-        keywords = ""
+        ret = ""
         dic = json.loads(f.read())
         assert lang in dic, "?"
         keywords = dic[lang]
         for k,v in dic["en"].items():
             assert k in keywords, "Target language is missing keyword: " + k
+        
+        print(keywords)
 
         for k,v in keywords.items():
-            keywords += "\n    " + k + ": " + v
-        keywords += "\n"
-        keywords_cache[lang] = keywords
+            ret += "\n    " + k + ": " + v
+        ret += "\n"
+        keywords_cache[lang] = ret
+        return ret
 
 
 
@@ -285,29 +257,27 @@ def run(lang):
 def fix(lang):
     jsn = NDict.from_file(f"output/game_mods/{lang}.json")
 
-    def find_brac(text):
-        matches = re.findall(r'\{([^}]*)\}', text)
-        if len(matches) >= 1:
-            return True
-        else:
-            return False
+    def translate(key, val):
+        lastkey = key[-1]
+        txt2, tagmap = extract_tags_for_translation(lastkey)
+        print(key, "\n", val, "\n", txt2, "\n", tagmap, "\n")
+        raise ValueError("t")
+        translated = translate_text(lang, txt2)
+        for k,v in tagmap.items():
+            print(k,v)
+            translated = translated.replace(k,v)
+            raise ValueError("t")
+        
+        return ""
 
-
-    def fix_floating_tags(tupkey, val) -> str:
-        key=tupkey[-1]
-
-        if (not find_brac(key)):
-            if re.search(r'\[/?\d\]', val):
-                replace = re.sub(r'\[/?\d\]', '', val)
-                return replace
-        return val
-
+    def has_weird_tags(key, val) -> bool:
+        return not bool(re.search(r'\[/?[1-9]\]', val))
 
     # fix floating tags
-    jsn = jsn.map(fix_floating_tags, None, False)
+    jsn = jsn.map(translate, should_ignore_key=has_weird_tags, print_progress=False)
     # jsn = jsn.map(print, None, False)
 
-    jsn.to_file(f"output/game_mods/{lang}.json")
+    # jsn.to_file(f"output/game_mods/{lang}.json")
 
 
 
