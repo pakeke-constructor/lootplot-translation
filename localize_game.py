@@ -7,11 +7,13 @@ import json
 import os
 import textwrap
 
-from dotenv import load_dotenv
 
 from util import *
 
-assert load_dotenv()
+
+from dotenv import load_dotenv
+assert load_dotenv(override=True)
+
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
@@ -185,7 +187,8 @@ def translate_text(lang, text):
                 resp = client.post(url, headers=headers, json=data)
                 resp.raise_for_status()
                 return resp.json()["choices"][0]["message"]["content"]
-        except httpx.HTTPError:
+        except httpx.HTTPError as e:
+            print(e)
             time.sleep(backoff)
             backoff *= 2
     raise Exception("Failed after 5 attempts")
@@ -258,23 +261,20 @@ def fix(lang):
     jsn = NDict.from_file(f"output/game_mods/{lang}.json")
 
     def translate(key, val):
+        has_weird_tags = bool(re.search(r'\[/?[1-9]\]', val))
+        if not has_weird_tags:
+            # dont translate valid shit.
+            return None
+
         lastkey = key[-1]
         txt2, tagmap = extract_tags_for_translation(lastkey)
-        print(key, "\n", val, "\n", txt2, "\n", tagmap, "\n")
-        raise ValueError("t")
         translated = translate_text(lang, txt2)
         for k,v in tagmap.items():
-            print(k,v)
             translated = translated.replace(k,v)
-            raise ValueError("t")
-        
-        return ""
-
-    def has_weird_tags(key, val) -> bool:
-        return not bool(re.search(r'\[/?[1-9]\]', val))
+        return translated
 
     # fix floating tags
-    jsn = jsn.map(translate, should_ignore_key=has_weird_tags, print_progress=False)
+    jsn = jsn.map(translate, print_progress=True)
     # jsn = jsn.map(print, None, False)
 
     # jsn.to_file(f"output/game_mods/{lang}.json")
