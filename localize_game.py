@@ -279,7 +279,7 @@ def fix(lang):
 
 
 
-fix("zh")
+fix("ru")
 
 # run()
 
