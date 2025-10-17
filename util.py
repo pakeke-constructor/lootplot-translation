@@ -109,7 +109,7 @@ class NDict:
 
     def map(    
         self, 
-        func: Callable[[tuple,str], Optional[str]], 
+        func: Callable[[tuple,str], str], 
         should_ignore_key: Optional[Callable[[tuple, str], bool]] = None, 
         print_progress: bool = False
     ):
@@ -130,9 +130,7 @@ class NDict:
             if should_ignore_key and should_ignore_key(k,strkey):
                 result[k] = v
             else:
-                r = func(k,v)
-                if r:
-                    result[k] = r
+                result[k] = func(k,v)
                 processed += 1
                 if print_progress:
                     print(f"{(processed / total_items) * 100:.1f}% done.")

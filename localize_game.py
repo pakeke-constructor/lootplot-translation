@@ -264,7 +264,7 @@ def fix(lang):
         has_weird_tags = bool(re.search(r'\[/?[1-9]\]', val))
         if not has_weird_tags:
             # dont translate valid shit.
-            return None
+            return val
 
         lastkey = key[-1]
         txt2, tagmap = extract_tags_for_translation(lastkey)
