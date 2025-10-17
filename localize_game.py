@@ -114,8 +114,6 @@ def get_keywords(lang):
         keywords = dic[lang]
         for k,v in dic["en"].items():
             assert k in keywords, "Target language is missing keyword: " + k
-        
-        print(keywords)
 
         for k,v in keywords.items():
             ret += "\n    " + k + ": " + v
@@ -269,6 +267,7 @@ def fix(lang):
         lastkey = key[-1]
         txt2, tagmap = extract_tags_for_translation(lastkey)
         translated = translate_text(lang, txt2)
+        print("\nTranslated: ", lastkey, " :::: ",translated, "\n\n")
         for k,v in tagmap.items():
             translated = translated.replace(k,v)
         return translated
@@ -277,7 +276,7 @@ def fix(lang):
     jsn = jsn.map(translate, print_progress=True)
     # jsn = jsn.map(print, None, False)
 
-    # jsn.to_file(f"output/game_mods/{lang}.json")
+    jsn.to_file(f"output/game_mods/{lang}.json")
 
 
 
