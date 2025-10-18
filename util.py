@@ -6,6 +6,15 @@ from typing import Callable, Optional, TypeVar, Any, Union
 
 
 
+LANGUAGE_NAMES = {
+    "zh": "Chinese Simplified",
+    "ru": "Russian"
+}
+
+
+
+
+
 def map_dict(d, func, should_ignore_key=None, print_progress=False):
     def count_leaves(dictionary):
         count = 0

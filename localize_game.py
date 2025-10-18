@@ -91,12 +91,6 @@ def extract_tags_for_translation(text) -> tuple[str, dict[str,str]]:
 
 
 
-LANGUAGE_NAMES = {
-    "zh": "Chinese Simplified",
-    "ru": "Russian"
-}
-
-
 KEYS = ""
 
 keywords_cache = {

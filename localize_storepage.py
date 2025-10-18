@@ -3,6 +3,7 @@ import requests
 import time
 import httpx
 import re
+import textwrap
 import json
 import os
 
@@ -29,12 +30,14 @@ TARGET_LANGUAGE = "Russian"
 #  (deepseek good for chinese apparently?)
 #
 
-# MODEL = "openai/gpt-4o"
-MODEL = "claude/3.5-sonnet"
+MODEL = "openai/gpt-4o"
+# MODEL = "claude/3.5-sonnet"
 
 
-def translate_text(text:str):
-    prompt = f'''
+def translate_text(lang:str, text:str):
+    langname = LANGUAGE_NAMES[lang]
+
+    prompt = textwrap.dedent(f'''
     # ROLE AND GOAL
     You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
 
@@ -49,10 +52,11 @@ def translate_text(text:str):
 
     # TRANSLATION TASK
 
-    Translate the following text to **{TARGET_LANGUAGE}**.
+    Translate the following text to **{langname}**.
 
     **Source Text:** "{text}"
-    '''
+    ''')
+
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -86,18 +90,18 @@ def run(lang):
         x = out_jsn.get(key)
         if x:
             return x
-        return translate_text(val)
+        return translate_text(lang, val)
 
-    jsn = jsn.map(loc)
+    jsn = jsn.map(loc, print_progress=True)
 
     jsn.to_file(OUT_FILE)
 
     
 
 
-
-run("zh")
 run("ru")
+
+# run("zh")
 
 
 
