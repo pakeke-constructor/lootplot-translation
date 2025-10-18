@@ -89,6 +89,7 @@ def run(lang):
     def loc(key: tuple,val: str)->str:
         x = out_jsn.get(key)
         if x:
+            print("SKIPPING.")
             return x
         return translate_text(lang, val)
 
@@ -101,7 +102,9 @@ def run(lang):
 
 run("ru")
 
-# run("zh")
+print("\n\n\n")
+
+run("zh")
 
 
 
