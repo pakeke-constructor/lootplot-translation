@@ -77,15 +77,19 @@ def translate_text(lang:str, text:str):
 
 
 
+IGNORE_KEYS = set(["itemid", "language"]) 
+
 def run(lang):
     jsn = NDict.from_file("input/storepage_english.json")
     OUT_FILE = f"output/storepage/{lang}.json"
     out_jsn = NDict.from_file(OUT_FILE)
 
     def loc(key: tuple,val: str)->str:
+        strkey = key[-1]
+        if strkey in IGNORE_KEYS:
+            return val
         x = out_jsn.get(key)
         if x:
-            print("SKIPPING.")
             return x
         return translate_text(lang, val)
 
