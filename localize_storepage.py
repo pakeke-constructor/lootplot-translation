@@ -18,10 +18,6 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
 
-TARGET_LANGUAGE_CODE = "ru"
-TARGET_LANGUAGE = "Russian"
-
-
 #
 # what LLM is best to use???
 #
@@ -39,7 +35,7 @@ def translate_text(lang:str, text:str):
 
     prompt = textwrap.dedent(f'''
     # ROLE AND GOAL
-    You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
+    You are an expert localization specialist, translating a strategy game from English to {langname}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
 
     # CRITICAL RULES
     Follow these rules without exception:
