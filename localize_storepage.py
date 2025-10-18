@@ -97,6 +97,7 @@ def run(lang):
 
 
 run("zh")
+run("ru")
 
 
 
