@@ -76,6 +76,11 @@ class NDict:
     
     def __getitem__(self, key):
         return self._data[key]
+
+    def get(self, key):
+        if key in self._data:
+            return self._data[key]
+        return None
     
     def __setitem__(self, key, value):
         self._data[key] = value

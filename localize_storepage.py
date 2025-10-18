@@ -33,7 +33,7 @@ TARGET_LANGUAGE = "Russian"
 MODEL = "claude/3.5-sonnet"
 
 
-def translate_text(text):
+def translate_text(text:str):
     prompt = f'''
     # ROLE AND GOAL
     You are an expert localization specialist, translating a strategy game from English to {TARGET_LANGUAGE}. Your primary goal is to produce translations that are extremely clear, concise, and natural-sounding for gamers. The game revolves around earning money, buying items, and gaining points.
@@ -77,16 +77,26 @@ def translate_text(text):
 
 
 
-def run():
-    jsn = read_json("input/localization_mods.json")
+def run(lang):
+    jsn = NDict.from_file("input/storepage_english.json")
+    OUT_FILE = f"output/storepage/{lang}.json"
+    out_jsn = NDict.from_file(OUT_FILE)
 
-    outformat = map_dict(tformat, translate_text, should_ignore_key=ignore_key, print_progress=True)
+    def loc(key: tuple,val: str)->str:
+        x = out_jsn.get(key)
+        if x:
+            return x
+        return translate_text(val)
 
-    write_json(f"output/game_mods/{TARGET_LANGUAGE_CODE}.json", out_jsn)
+    jsn = jsn.map(loc)
+
+    jsn.to_file(OUT_FILE)
+
+    
 
 
 
-run()
+run("zh")
 
 
 

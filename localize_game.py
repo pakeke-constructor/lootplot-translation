@@ -256,7 +256,10 @@ def run(lang):
 
 
 def fix(lang):
-    jsn = NDict.from_file(f"output/game_mods/{lang}.json")
+    jsn = NDict.from_file(f"input/game_mods/{lang}.json")
+
+    OUT_FILE = f"output/game_mods/{lang}.json"
+    out_jsn = NDict.from_file(OUT_FILE)
 
     def translate(key, val):
         has_weird_tags = bool(re.search(r'\[/?[1-9]\]', val))
@@ -275,11 +278,39 @@ def fix(lang):
     jsn = jsn.map(translate, print_progress=True)
     # jsn = jsn.map(print, None, False)
 
-    jsn.to_file(f"output/game_mods/{lang}.json")
+    jsn.to_file(OUT_FILE)
 
 
 
-fix("ru")
+
+def update(lang):
+    jsn = NDict.from_file(f"input/game_mods/{lang}.json")
+
+    OUT_FILE = f"output/game_mods/{lang}.json"
+    out_jsn = NDict.from_file(OUT_FILE)
+
+    def translate(key, val):
+        existing = out_jsn.get(key)
+        if existing:
+            # we have already translated this!
+            return existing 
+
+        lastkey = key[-1]
+        txt2, tagmap = extract_tags_for_translation(lastkey)
+        translated = translate_text(lang, txt2)
+        for k,v in tagmap.items():
+            translated = translated.replace(k,v)
+        return translated
+
+    jsn = jsn.map(translate, print_progress=True)
+
+    jsn.to_file(OUT_FILE)
+
+
+
+
+
+update("ru")
 
 # run()
 
