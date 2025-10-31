@@ -305,7 +305,9 @@ def update(lang):
 
 
 
+print("TRANSLATING ZH:")
 update("zh")
+print("TRANSLATING RU:")
 update("ru")
 
 # run()
