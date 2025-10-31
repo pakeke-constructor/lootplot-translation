@@ -278,7 +278,7 @@ def fix(lang):
 
 
 def update(lang):
-    jsn = NDict.from_file(f"input/game_mods/{lang}.json")
+    jsn = NDict.from_file(f"input/localization_mods.json")
 
     OUT_FILE = f"output/game_mods/{lang}.json"
     out_jsn = NDict.from_file(OUT_FILE)
@@ -294,9 +294,10 @@ def update(lang):
         translated = translate_text(lang, txt2)
         for k,v in tagmap.items():
             translated = translated.replace(k,v)
+        print("TRANSLATED: ", lastkey, translated)
         return translated
 
-    jsn = jsn.map(translate, print_progress=True)
+    jsn = jsn.map(translate, print_progress=False)
 
     jsn.to_file(OUT_FILE)
 
@@ -304,6 +305,7 @@ def update(lang):
 
 
 
+update("zh")
 update("ru")
 
 # run()
